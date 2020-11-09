@@ -1,3 +1,4 @@
+#import all libraries and modules
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -8,11 +9,13 @@ import seaborn as sns
 from matplotlib import cm
 import plotly.graph_objects as go
 import plotly.io as pio
-
+#read csv file through pandas
 df = pd.read_csv('covid_19_india.csv', parse_dates=['Date'], dayfirst=True)
 df = df[['Date', 'State/UnionTerritory','Cured','Deaths','Confirmed']]
+#renaming columns for simplification of dataframe
 df.columns = ['date', 'state','cured','deaths','confirmed']
 
+#creating new dataframe for extracting todays covid cases
 today = df[df['date']=='2020-10-27']
 confirmed = today.sort_values('confirmed', ascending=True)
 
@@ -22,8 +25,8 @@ df['new_confirmed'] = df.groupby(['state'])['confirmed'].diff()
 df['new_deaths'] = df.groupby(['state'])['deaths'].diff()
 df['new_cured'] = df.groupby(['state'])['cured'].diff()
 
-
-
+#plotting graphs throught plotly module 
+# line graph for confirmed cases
 fig = px.line(df, x="date", y="confirmed", color='state',template= "plotly_white")
 fig.update_xaxes(tickfont=dict(family='Rockwell', color='black', size=14))
 fig.update_yaxes(tickfont=dict(family='Rockwell', color='black', size=14))
@@ -38,7 +41,7 @@ fig.update_layout(legend_orientation="h",legend=dict(x= -.1, y=-.3),
                  plot_bgcolor = "snow")
 fig.show()
 
-
+#bar graph for confirmed cases per state using px.bar function
 fig = px.bar(confirmed, x="confirmed", y="state", orientation='h', text = 'confirmed')
 fig.update_layout(
     title_text='<b>Confirmed cases of Covid-19 per State <b>',
@@ -55,7 +58,7 @@ fig.update_yaxes(tickfont=dict(family='Rockwell', color='black', size=14))
 
 deaths = today.sort_values('deaths', ascending=True)
 deaths = deaths[deaths.deaths > 0 ]
-
+# px.bar function to plot deaths due to covid-19
 fig = px.bar(deaths, x="deaths", y="state", orientation='h', text = 'deaths')
 fig.update_layout(
     title_text='<b>Deaths due to covid 19<b>',
